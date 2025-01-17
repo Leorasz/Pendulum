@@ -62,8 +62,9 @@ class Model:
     def __init__(self):
         self.layers: List[Callable[[Tensor], Tensor]] = [
             nn.Linear(2, 100), Tensor.relu,
-            nn.Linear(100,100), Tensor.relu,
-            nn.Linear(100,100), Tensor.relu,
+            nn.Linear(100,200), Tensor.relu,
+            nn.Linear(200,200), Tensor.relu,
+            nn.Linear(200,100), Tensor.relu,
             nn.Linear(100,1)
         ]
 
@@ -129,7 +130,7 @@ if __name__ == "__main__":
     std = 0.0
 
     eta = -0.001
-    lamba = 80
+    lamba = 1
     c = 0.1
 
     full_range_1D = Tensor.arange(-math.pi/4, math.pi/4, step=epsilon)
@@ -203,8 +204,7 @@ if __name__ == "__main__":
         u = controller_output.unsqueeze(-1).repeat(1, nhat)
         w = Tensor.normal(full_range_hole.shape[0], nhat, std=std)
         new_barrier = Tensor.mean(barrier(pendulum(t, u, w)), axis=1)
-        loss5 = new_barrier - barrier(full_range_hole)# - c + delta - eta #controller
-        loss5 = loss5 - 0.1 + delta - eta
+        loss5 = new_barrier - barrier(full_range_hole) - c + delta - eta #controller
         loss5 = Tensor.relu(loss5)
 
         #lipschitz loss

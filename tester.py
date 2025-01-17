@@ -21,11 +21,11 @@ mhat = 10
 nhat = int(mhat/(delta*delta*betas))
 horizon = 20
 epsilon = 0.01
-std = 0.05
+std = 0.0
 
 eta = -0.01
 c = 0.74
-lamba = 80
+lamba = 1
 
 lx = 1.1
 lu = 0.01
@@ -216,6 +216,7 @@ def test_main_losses(barrier: Model, controller: Model):
         new_barrier = Tensor.mean(barrier(pendulum(t, u, w)), axis=1)
         new_barriers.append(new_barrier)
         loss5u = new_barrier - barrier(batch) - c + delta - eta #controller
+        print(f"this max is {Tensor.max(loss5u.flatten()).item()}")
         loss5s.append(Tensor.mean(Tensor.relu(loss5u)).item())
 
     losses = []
@@ -262,5 +263,5 @@ def test_system(barrier: Model, controller: Model):
     graph_controller(controller, horizon, std=std)
 
 test_system(barrier, controller)
-# graph_loss5(barrier, controller)
+graph_loss5(barrier, controller)
 # graph_controller(controller, 20, std=0)
